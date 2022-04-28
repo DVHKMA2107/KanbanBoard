@@ -3,6 +3,7 @@
 $board-bg-color: #0079bf;
 
 .navbar-board {
+    height: $navbar-board-heihgt;
     padding: $gap;
     display: flex;
     align-items: center;

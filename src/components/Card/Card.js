@@ -1,14 +1,20 @@
-import React from "react";
+import React from 'react'
 
-import "./Card.scss";
+import './Card.scss'
 
-const Task = ({card}) => {
+const Task = ({ card }) => {
   return (
-    <li className="card-item">
-      {card.cover && <img src={card.cover} alt="hoadamviet" />}
+    <div className="card-item">
+      {card.cover && (
+        <img
+          src={card.cover}
+          alt="hoadamviet"
+          onMouseDown={(e) => e.preventDefault()}
+        />
+      )}
       {card.title}
-    </li>
-  );
-};
+    </div>
+  )
+}
 
-export default Task;
+export default Task
