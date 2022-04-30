@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { isEmpty } from 'lodash'
 import { Container, Draggable } from 'react-smooth-dnd'
+import { initialData } from 'actions/initialData'
+import { applyDrag } from 'utilities/dragDrop'
 
 import Column from 'components/Column/Column'
 
-import { initialData } from 'actions/initialData'
 import { mapOrder } from 'utilities/sort'
 
 import './KanbanBoard.scss'
@@ -28,7 +29,25 @@ const KanbanBoard = () => {
   }
 
   const onColumnDrop = (dropResult) => {
-    console.log(dropResult)
+    let newColumns = [...columns]
+    newColumns = applyDrag(newColumns, dropResult)
+
+    let newBoard = { ...board }
+    newBoard.columnOrder = newColumns.map((column) => column.id)
+    newBoard.columns = newColumns
+
+    setColumns(newColumns)
+    setBoard(newBoard)
+  }
+
+  const onCardDrop = (columnId, dropResult) => {
+    if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
+      let newColumns = [...columns]
+      const currentColumn = newColumns.find((column) => column.id === columnId)
+      currentColumn.cards = applyDrag(currentColumn.cards, dropResult)
+      currentColumn.cardOrder = currentColumn.cards.map((card) => card.id)
+      setColumns(newColumns)
+    }
   }
 
   return (
@@ -46,10 +65,14 @@ const KanbanBoard = () => {
       >
         {columns.map((item, index) => (
           <Draggable key={index}>
-            <Column column={item} />
+            <Column column={item} onCardDrop={onCardDrop} />
           </Draggable>
         ))}
       </Container>
+      <div className="add-column">
+        <i className="fa fa-plus icon" aria-hidden="true"></i>
+        Add another card
+      </div>
     </div>
   )
 }
