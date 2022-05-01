@@ -2,7 +2,7 @@ export const initialData = {
   boards: [
     {
       id: 'board-1',
-      columnOrder: ['column-1', 'column-2', 'column-3'],
+      columnOrder: ['column-1', 'column-2', 'column-3', 'column-4', 'column-5'],
       columns: [
         {
           id: 'column-1',
@@ -124,6 +124,64 @@ export const initialData = {
               boardId: 'board-1',
               columnId: 'column-3',
               title: 'Title of card 13',
+              cover: null
+            }
+          ]
+        },
+        {
+          id: 'column-4',
+          boardId: 'board-1',
+          title: 'Done column',
+          cardOrder: ['card-14', 'card-15', 'card-16'],
+          cards: [
+            {
+              id: 'card-14',
+              boardId: 'board-1',
+              columnId: 'column-4',
+              title: 'Title of card 14',
+              cover: null
+            },
+            {
+              id: 'card-15',
+              boardId: 'board-1',
+              columnId: 'column-4',
+              title: 'Title of card 15',
+              cover: null
+            },
+            {
+              id: 'card-16',
+              boardId: 'board-1',
+              columnId: 'column-4',
+              title: 'Title of card 16',
+              cover: null
+            }
+          ]
+        },
+        {
+          id: 'column-5',
+          boardId: 'board-1',
+          title: 'Done column',
+          cardOrder: ['card-17', 'card-18', 'card-19'],
+          cards: [
+            {
+              id: 'card-17',
+              boardId: 'board-1',
+              columnId: 'column-5',
+              title: 'Title of card 17',
+              cover: null
+            },
+            {
+              id: 'card-18',
+              boardId: 'board-1',
+              columnId: 'column-5',
+              title: 'Title of card 18',
+              cover: null
+            },
+            {
+              id: 'card-19',
+              boardId: 'board-1',
+              columnId: 'column-5',
+              title: 'Title of card 19',
               cover: null
             }
           ]
