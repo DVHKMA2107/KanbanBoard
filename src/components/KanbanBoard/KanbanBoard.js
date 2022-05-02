@@ -103,6 +103,24 @@ const KanbanBoard = () => {
     setEnteredTitle(event.target.value)
   }
 
+  const onUpdateColumn = (newColumnToUpdate) => {
+    const columnIdToUpdate = newColumnToUpdate.id
+    let newColumns = [...columns]
+    const columnIndexToUpdate = newColumns.findIndex(
+      (column) => column.id === columnIdToUpdate
+    )
+    if (newColumnToUpdate._destroy) {
+      newColumns.splice(columnIndexToUpdate, 1)
+    } else {
+      newColumns.splice(columnIndexToUpdate, 1, newColumnToUpdate)
+    }
+    let newBoard = { ...board }
+    newBoard.columnOrder = newColumns.map((column) => column.id)
+    newBoard.columns = newColumns
+    setColumns(newColumns)
+    setBoard(newBoard)
+  }
+
   return (
     <div className="board-colums">
       <Container
@@ -118,7 +136,11 @@ const KanbanBoard = () => {
       >
         {columns.map((item, index) => (
           <Draggable key={index}>
-            <Column column={item} onCardDrop={onCardDrop} />
+            <Column
+              column={item}
+              onCardDrop={onCardDrop}
+              onUpdateColumn={onUpdateColumn}
+            />
           </Draggable>
         ))}
       </Container>

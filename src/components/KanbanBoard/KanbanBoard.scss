@@ -56,6 +56,10 @@
         margin-left: $gap;
         border-radius: $column-border-radius;
 
+        &:focus {
+            border-color: $input-border-color;
+        }
+
         .input-enter-new-column {
             margin: 5px 0;
         }
