@@ -169,7 +169,7 @@ const KanbanBoard = () => {
               <Button variant="success" size="sm" onClick={addNewColumn}>
                 Add Column
               </Button>
-              <span className="cancel-input-enter" onClick={toogleOpenInput}>
+              <span className="cancel-icon" onClick={toogleOpenInput}>
                 <i className="fa fa-trash icon"></i>
               </span>
             </Col>
