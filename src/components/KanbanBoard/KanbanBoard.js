@@ -10,7 +10,7 @@ import {
 } from 'react-bootstrap'
 import { applyDrag } from 'utilities/dragDrop'
 import { mapOrder } from 'utilities/sort'
-import { fetchBoardDetailt } from 'actions/ApiCall'
+import { fetchBoardDetailt, createNewColumn } from 'actions/ApiCall'
 import Column from 'components/Column/Column'
 import './KanbanBoard.scss'
 
@@ -73,31 +73,29 @@ const KanbanBoard = () => {
     }
 
     const newColumnToAdd = {
-      id: Math.random().toString(36).substring(2, 5),
       boardId: board._id,
-      title: enteredTitle,
-      cards: [],
-      cardOrder: []
+      title: enteredTitle.trim()
     }
 
-    let newColumns = [...columns]
-    newColumns.push(newColumnToAdd)
-    let newBoard = { ...board }
-    newBoard.columnOrder = newColumns.map((column) => column._id)
-    newBoard.columns = newColumns
+    createNewColumn(newColumnToAdd).then((column) => {
+      let newColumns = [...columns]
+      newColumns.push(column)
+      let newBoard = { ...board }
+      newBoard.columnOrder = newColumns.map((column) => column._id)
+      newBoard.columns = newColumns
 
-    setColumns(newColumns)
-    setBoard(newBoard)
-    setEnteredTitle('')
-
-    toogleOpenInput()
+      setColumns(newColumns)
+      setBoard(newBoard)
+      setEnteredTitle('')
+      toogleOpenInput()
+    })
   }
 
   const onNewColumnTitleChangeHandle = (event) => {
     setEnteredTitle(event.target.value)
   }
 
-  const onUpdateColumn = (newColumnToUpdate) => {
+  const onUpdateColumnState = (newColumnToUpdate) => {
     const columnIdToUpdate = newColumnToUpdate._id
     let newColumns = [...columns]
     const columnIndexToUpdate = newColumns.findIndex(
@@ -133,7 +131,7 @@ const KanbanBoard = () => {
             <Column
               column={item}
               onCardDrop={onCardDrop}
-              onUpdateColumn={onUpdateColumn}
+              onUpdateColumnState={onUpdateColumnState}
             />
           </Draggable>
         ))}
