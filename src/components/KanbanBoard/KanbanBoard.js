@@ -8,13 +8,10 @@ import {
   Form,
   Button
 } from 'react-bootstrap'
-import { initialData } from 'actions/initialData'
 import { applyDrag } from 'utilities/dragDrop'
-
-import Column from 'components/Column/Column'
-
 import { mapOrder } from 'utilities/sort'
-
+import { fetchBoardDetailt } from 'actions/ApiCall'
+import Column from 'components/Column/Column'
 import './KanbanBoard.scss'
 
 const KanbanBoard = () => {
@@ -26,13 +23,10 @@ const KanbanBoard = () => {
   const inputRef = useRef()
 
   useEffect(() => {
-    const boardFromDB = initialData.boards.find(
-      (board) => board.id === 'board-1'
-    )
-    if (boardFromDB) {
-      setBoard(boardFromDB)
-      setColumns(mapOrder(boardFromDB.columns, boardFromDB.columnOrder, 'id'))
-    }
+    fetchBoardDetailt('62765f51e4a1f6340860be10').then((board) => {
+      setBoard(board)
+      setColumns(mapOrder(board.columns, board.columnOrder, '_id'))
+    })
   }, [])
 
   useEffect(() => {
@@ -51,7 +45,7 @@ const KanbanBoard = () => {
     newColumns = applyDrag(newColumns, dropResult)
 
     let newBoard = { ...board }
-    newBoard.columnOrder = newColumns.map((column) => column.id)
+    newBoard.columnOrder = newColumns.map((column) => column._id)
     newBoard.columns = newColumns
 
     setColumns(newColumns)
@@ -61,9 +55,9 @@ const KanbanBoard = () => {
   const onCardDrop = (columnId, dropResult) => {
     if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
       let newColumns = [...columns]
-      const currentColumn = newColumns.find((column) => column.id === columnId)
+      const currentColumn = newColumns.find((column) => column._id === columnId)
       currentColumn.cards = applyDrag(currentColumn.cards, dropResult)
-      currentColumn.cardOrder = currentColumn.cards.map((card) => card.id)
+      currentColumn.cardOrder = currentColumn.cards.map((card) => card._id)
       setColumns(newColumns)
     }
   }
@@ -80,7 +74,7 @@ const KanbanBoard = () => {
 
     const newColumnToAdd = {
       id: Math.random().toString(36).substring(2, 5),
-      boardId: board.id,
+      boardId: board._id,
       title: enteredTitle,
       cards: [],
       cardOrder: []
@@ -89,7 +83,7 @@ const KanbanBoard = () => {
     let newColumns = [...columns]
     newColumns.push(newColumnToAdd)
     let newBoard = { ...board }
-    newBoard.columnOrder = newColumns.map((column) => column.id)
+    newBoard.columnOrder = newColumns.map((column) => column._id)
     newBoard.columns = newColumns
 
     setColumns(newColumns)
@@ -104,10 +98,10 @@ const KanbanBoard = () => {
   }
 
   const onUpdateColumn = (newColumnToUpdate) => {
-    const columnIdToUpdate = newColumnToUpdate.id
+    const columnIdToUpdate = newColumnToUpdate._id
     let newColumns = [...columns]
     const columnIndexToUpdate = newColumns.findIndex(
-      (column) => column.id === columnIdToUpdate
+      (column) => column._id === columnIdToUpdate
     )
     if (newColumnToUpdate._destroy) {
       newColumns.splice(columnIndexToUpdate, 1)
@@ -115,7 +109,7 @@ const KanbanBoard = () => {
       newColumns.splice(columnIndexToUpdate, 1, newColumnToUpdate)
     }
     let newBoard = { ...board }
-    newBoard.columnOrder = newColumns.map((column) => column.id)
+    newBoard.columnOrder = newColumns.map((column) => column._id)
     newBoard.columns = newColumns
     setColumns(newColumns)
     setBoard(newBoard)
