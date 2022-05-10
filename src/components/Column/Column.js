@@ -5,6 +5,7 @@ import { cloneDeep } from 'lodash'
 
 import Card from 'components/Card/Card'
 import ConfirmModal from 'components/Common/ConfirmModal'
+import { createNewCard, updateColumn } from 'actions/ApiCall'
 import { MODAL_ACTION_CONFIRM } from 'utilities/constants'
 import {
   saveContentAfterPressEnter,
@@ -14,7 +15,7 @@ import { mapOrder } from 'utilities/sort'
 
 import './Column.scss'
 
-const Column = ({ column, onCardDrop, onUpdateColumn }) => {
+const Column = ({ column, onCardDrop, onUpdateColumnState }) => {
   const [isShowModal, setIsShowModal] = useState(false)
   const [columnTitle, setColumnTitle] = useState('')
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
@@ -48,7 +49,9 @@ const Column = ({ column, onCardDrop, onUpdateColumn }) => {
         _destroy: true
       }
 
-      onUpdateColumn(newColumn)
+      updateColumn(newColumn._id, newColumn).then((columnUpdated) => {
+        onUpdateColumnState(columnUpdated)
+      })
     }
     toogleModalOpen()
   }
@@ -58,11 +61,17 @@ const Column = ({ column, onCardDrop, onUpdateColumn }) => {
   const handleCardTitleChange = (e) => setEnteredCardTitle(e.target.value)
 
   const handleColumnTitleBlur = () => {
-    const newColumn = {
-      ...column,
-      title: columnTitle
+    if (columnTitle !== column.title) {
+      const newColumn = {
+        ...column,
+        title: columnTitle
+      }
+
+      updateColumn(newColumn._id, newColumn).then((columnUpdated) => {
+        columnUpdated.cards = newColumn.cards
+        onUpdateColumnState(columnUpdated)
+      })
     }
-    onUpdateColumn(newColumn)
   }
 
   const addNewCard = () => {
@@ -72,20 +81,20 @@ const Column = ({ column, onCardDrop, onUpdateColumn }) => {
     }
 
     const newCardToAdd = {
-      id: Math.random().toString(36).substring(2, 5),
       boardId: column.boardId,
       columnId: column._id,
-      title: enteredCardTitle,
-      cover: null
+      title: enteredCardTitle
     }
 
-    let newColumn = cloneDeep(column)
-    newColumn.cards.push(newCardToAdd)
-    newColumn.cardOrder.push(newCardToAdd._id)
+    createNewCard(newCardToAdd).then((card) => {
+      let newColumn = cloneDeep(column)
+      newColumn.cards.push(card)
+      newColumn.cardOrder.push(card._id)
 
-    onUpdateColumn(newColumn)
-    setEnteredCardTitle('')
-    toogleOpenNewCardForm()
+      onUpdateColumnState(newColumn)
+      setEnteredCardTitle('')
+      toogleOpenNewCardForm()
+    })
   }
 
   return (
